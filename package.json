@@ -1,0 +1,24 @@
+{
+  "name": "@mansoorkamthewala/jsoneditor",
+  "version": "0.0.1",
+  "description": "A web based tool to load, view, edit JSON structure.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mansoorkamthewala/jsoneditor.git"
+  },
+  "keywords": [
+    "JSON",
+    "editor",
+    "web"
+  ],
+  "author": "Mansoor Kamthewala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mansoorkamthewala/jsoneditor/issues"
+  },
+  "homepage": "https://github.com/mansoorkamthewala/jsoneditor#readme"
+}
