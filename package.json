@@ -4,6 +4,8 @@
   "description": "A web based tool to load, view, edit JSON structure.",
   "main": "index.js",
   "scripts": {
+    "dev-build": "webpack --watch",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/mansoorkamthewala/jsoneditor/issues"
   },
-  "homepage": "https://github.com/mansoorkamthewala/jsoneditor#readme"
+  "homepage": "https://github.com/mansoorkamthewala/jsoneditor#readme",
+  "devDependencies": {
+    "webpack": "^4.39.2"
+  },
+  "dependencies": {
+    "webpack-cli": "^3.3.6"
+  }
 }

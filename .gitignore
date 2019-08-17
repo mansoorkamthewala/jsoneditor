@@ -1,0 +1,5 @@
+# ignore node modules packages
+**/node_modules
+
+# ignore example usage
+**/example
