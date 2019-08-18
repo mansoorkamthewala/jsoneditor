@@ -1,15 +1,31 @@
 'use strict';
 
-function Editor () {
-	if (!(this instanceof Editor)) {
-	  throw new Error('Editor constructor called without "new".');
-	}
+var domUtil = require('./utilities/basicDOMUtil');
 
-	console.log('Constructor called ...');
+// load css
+var css = require('../css/editor.css');
 
-	Editor.prototype.initialize = function () {
-		console.log('Editor Initialized ...');
-	}
+
+function Editor (targetElement) {
+    if (!(this instanceof Editor)) {
+        throw new Error('Editor constructor called without "new".');
+    }
+    // initialize editor
+    this.create(targetElement);
+}
+
+Editor.prototype.create = function (targetElement) {
+    this.targetElement = targetElement;
+    this.wrapperDiv = domUtil.createDomWithClass('wrapper row');
+    this.editorDiv = domUtil.createDomWithClass('editor col-50');
+    this.displayDiv = domUtil.createDomWithClass('display col-50');
+
+    // append editor and display view to wrapper
+    this.wrapperDiv.appendChild(this.editorDiv);
+    this.wrapperDiv.appendChild(this.displayDiv);
+
+    // now append wrapper to target element
+    this.targetElement.appendChild(this.wrapperDiv);
 }
 
 // export Editor module

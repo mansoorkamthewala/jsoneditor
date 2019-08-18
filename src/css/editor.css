@@ -1,0 +1,14 @@
+div.wrapper.row {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.wrapper .editor,
+.wrapper .display {
+    background-color: #F8F8F8;
+    box-sizing: border-box;
+    border: 1px solid black;
+    width: 50%;
+    height: 90vh;
+}
