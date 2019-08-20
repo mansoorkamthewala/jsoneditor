@@ -1,4 +1,4 @@
-div.wrapper.row {
+div.wrapper .row {
     display: flex;
     flex-wrap: wrap;
 
@@ -11,4 +11,11 @@ div.wrapper.row {
     border: 1px solid black;
     width: 50%;
     height: 90vh;
+}
+
+.wrapper .editor-toolbar {
+    background-color: #bdd7ea;
+    box-sizing: border-box;
+    border: 1px solid black;
+    padding: 5px;
 }

@@ -29,6 +29,9 @@ module.exports = function () {
                 }
             ]
         },
-        plugins: [extractCSS]
+        plugins: [extractCSS],
+        // uncomment following lines for debugging
+        // mode: 'development',
+        // devtool: 'eval-source-map'
     };
 }
