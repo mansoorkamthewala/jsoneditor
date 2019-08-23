@@ -17,15 +17,13 @@ function processData (data, level = 0) {
 
     if (_.isArray(data)) {
         result.type = TYPES.ARRAY;
-        result.keys = Object.keys(data);
         result.values = _.map(data, function (item) {
             return processData(item, level + 1);
         });
     } else if (_.isObject(data)) {
         result.type = TYPES.OBJECT;
-        result.keys = Object.keys(data);
-        result.values = _.map(result.keys, function (item) {
-            return processData(data[item], level + 1);
+        result.values = _.map(Object.keys(data), function (item) {
+            return _.extend({key: item}, processData(data[item], level + 1));
         });
     } else {
         if (_.isString(data)) {

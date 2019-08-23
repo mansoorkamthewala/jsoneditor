@@ -99,7 +99,7 @@ Editor.prototype.createToolBar = function () {
             // triggers when reading file is complete
             reader.onload = function (readFile) {
                 // set's JSON on editor
-                _this.setJSON(readFile.target.result.replace(/\s/g, ''));
+                _this.setJSON(readFile.target.result);
             };
             // reading file begins
             reader.readAsText(uploadedFile);
@@ -139,7 +139,9 @@ Editor.prototype.setJSON = function (json) {
     }
     // process parsed JOSN
     this.json = jsonUtil.processData(parsedJSON);
-    jsonView.populateJSON(this.json);
+    // first make target empty
+    jsonView.target.innerHTML = '';
+    jsonView.populateJSON(this.json, jsonView.target);
 };
 
 

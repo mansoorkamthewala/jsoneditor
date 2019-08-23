@@ -2,25 +2,25 @@
 var domUtil = require('./basicDOMUtil');
 
 /**
- * Create a DOM element with div and add classes
- * @param {String} tag - tag to be used to creat DOM element
- * @param {String} cssClass - CSS classes to be added to the new Div DOM element
- * @return {Object} new DOM element
+ * Create a DOM element with open braces, either { OR [
+ * @param {String} brace - innerText for the created DOM element
+ * @param {Number} level - CSS class will be created using this level
+ * @return {Element} new DOM element
  */
-exports.getOpenCurly = function (level, indent) {
-	var item = domUtil.createDomElementWithClass('div', `open-curly level-${level}`);
-	item.innerText = '{';
+exports.getOpenBrace = function (brace, level) {
+	var item = domUtil.createDomElementWithClass('div', `open-brace key-level-${level}`);
+	item.innerText = brace;
 	return item;
 }
 
 /**
- * Create a DOM element with div and add classes
- * @param {String} tag - tag to be used to creat DOM element
- * @param {String} cssClass - CSS classes to be added to the new Div DOM element
- * @return {Object} new DOM element
+ * Create a DOM element with close braces, either } OR ]
+ * @param {String} brace - innerText for the created DOM element
+ * @param {Number} level - CSS class will be created using this level
+ * @return {Element} new DOM element
  */
-exports.getCloseCurly = function (level, indent) {
-	var item = domUtil.createDomElementWithClass('div', `close-curly level-${level}`);
-	item.innerText = '}';
+exports.getCloseBrace = function (brace, level) {
+	var item = domUtil.createDomElementWithClass('div', `close-brace key-level-${level}`);
+	item.innerText = brace;
 	return item;
 }

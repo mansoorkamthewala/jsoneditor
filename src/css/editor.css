@@ -11,6 +11,9 @@ div.wrapper .row {
     border: 1px solid black;
     width: 50%;
     height: 90vh;
+    overflow-x: auto;
+    overflow-y: scroll;
+    white-space: nowrap;
 }
 
 .wrapper .editor-toolbar {
@@ -18,4 +21,17 @@ div.wrapper .row {
     box-sizing: border-box;
     border: 1px solid black;
     padding: 5px;
+}
+
+.line-item {
+    display: flex;
+}
+
+body .json-root {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+body .json-root div[class^="key-level-"] {
+    font-weight: bold;
 }
