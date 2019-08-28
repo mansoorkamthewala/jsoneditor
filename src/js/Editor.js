@@ -2,7 +2,9 @@
 
 var domUtil = require('./utilities/basicDOMUtil');
 var jsonUtil = require('./utilities/jsonParseUtil');
+var actions = require('./business/actions');
 var jsonView = require('./jsonView');
+var editorView = require('./editorView');
 
 // load css
 var css = require('../css/editor.css');
@@ -12,7 +14,7 @@ var css = require('../css/editor.css');
  * @constructor Editor
  * @param {Element} targetElement target container element
  */
-function Editor(targetElement) {
+function Editor (targetElement) {
     if (!(this instanceof Editor)) {
         throw new Error('Editor constructor called without "new".');
     }
@@ -27,10 +29,17 @@ function Editor(targetElement) {
 Editor.prototype.create = function (targetElement) {
     this.targetElement = targetElement;
     this.json = {};
+    // initialize actions
+    actions.initialize(this);
     this.wrapperDiv = domUtil.createDomElementWithClass('div', 'wrapper');
 
     // append items to wrapper
+    // toolbar
     this.wrapperDiv.appendChild(this.createToolBar());
+    // breadcrumb
+    this.breadcrumb = this.createBreadcrumb();
+    this.wrapperDiv.appendChild(this.breadcrumb);
+    // editor
     this.wrapperDiv.appendChild(this.createEditor());
 
     // now append wrapper to target element
@@ -45,16 +54,20 @@ Editor.prototype.create = function (targetElement) {
  */
 Editor.prototype.createEditor = function () {
     this.editorWrapper = domUtil.createDomElementWithClass('div', 'editor-wrapper row');
-    this.editorDiv = domUtil.createDomElementWithClass('div', 'editor col-50');
-    this.treeView = domUtil.createDomElementWithClass('div', 'display col-50');
+    this.editorDiv = domUtil.createDomElementWithClass('div', 'editor-view col-50');
+    this.treeView = domUtil.createDomElementWithClass('div', 'display-view col-50');
+
+    this.displayEditor = domUtil.createDomElementWithClass('div', 'editor');
+    this.editorDiv.appendChild(this.displayEditor);
 
     this.displayJSON = domUtil.createDomElementWithClass('div', 'json');
-
     this.treeView.appendChild(this.displayJSON);
 
     this.editorWrapper.appendChild(this.editorDiv);
     this.editorWrapper.appendChild(this.treeView);
+
     this.displayJSON.appendChild(jsonView.create());
+    this.displayEditor.appendChild(editorView.create());
 
     return this.editorWrapper;
 };
@@ -126,6 +139,16 @@ Editor.prototype.createToolBar = function () {
 };
 
 /**
+ * Creates Breadcrumb view.
+ * Breadcrumb view will be used for easy navigation through JSON
+ * @return {Element} breadcrumb
+ */
+Editor.prototype.createBreadcrumb = function () {
+    var breadcrumb = domUtil.createDomElementWithClass('div', 'breadcrumb row');;
+    return breadcrumb;
+};
+
+/**
  * Process JSON and set it on Editor.
  * Triggers JSON structure view to re-render with loaded JSON.
  * @param {String} json - Stringified JSON structure which is read from File
@@ -136,14 +159,22 @@ Editor.prototype.setJSON = function (json) {
         parsedJSON = JSON.parse(json);
     } catch (error) {
         alert('Uploaded JSON file is not valid JSON');
+        // do nothing
+        return;
     }
     // process parsed JOSN
     this.json = jsonUtil.processData(parsedJSON);
+
+    // Draw Json Structure view
     // first make target empty
     jsonView.target.innerHTML = '';
     jsonView.populateJSON(this.json, jsonView.target);
-};
 
+    // Draw json editor starting with root
+    // first make target empty
+    editorView.target.innerHTML = '';
+    editorView.populateEditor(this.json, editorView.target);
+};
 
 // export Editor module
 Editor.default = Editor;

@@ -11,6 +11,8 @@ exports.createDomElementWithClass = function (tag, cssClass) {
 		throw new Error('tag cannot be empty.');
 	}
 	var item = document.createElement(tag);
-	item.setAttribute('class', cssClass);
+	if (cssClass) {
+		item.setAttribute('class', cssClass);
+	}
 	return item;
 }

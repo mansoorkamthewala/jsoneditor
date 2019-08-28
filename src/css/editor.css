@@ -1,11 +1,27 @@
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
 div.wrapper .row {
     display: flex;
     flex-wrap: wrap;
-
 }
 
-.wrapper .editor,
-.wrapper .display {
+body .json-root,
+body .editor-root,
+body .breadcrumb {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+body .json-root div[class^="key-level-"] {
+    font-weight: bold;
+}
+
+body .json-root div.focused {
+    background-color: #fff888;
+}
+
+.wrapper .editor-view,
+.wrapper .display-view {
     background-color: #F8F8F8;
     box-sizing: border-box;
     border: 1px solid black;
@@ -23,15 +39,117 @@ div.wrapper .row {
     padding: 5px;
 }
 
-.line-item {
+.wrapper .breadcrumb {
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    border: 1px solid black;
+    padding: 5px;
+    height: 2em;
+}
+
+.line-item, div[class^="value-wrapper-"] {
     display: flex;
 }
 
-body .json-root {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 16px;
+.line-item div[class^="key-card-"],
+.line-item div[class^="index-card-"],
+.line-item div[class^="value-wrapper-"] {
+    background: #e0e0e0;
+    text-align: center;
+    margin: 5px;
+    box-sizing: border-box;
+    border: 1px solid black;
 }
 
-body .json-root div[class^="key-level-"] {
-    font-weight: bold;
+.line-item div[class^="key-card-"] {
+    width: 25%;
+}
+
+.line-item div[class^="index-card-"] {
+    width: 10%;
+}
+
+.line-item div[class^="value-wrapper-"] {
+    width: 60%;
+}
+
+.line-item div[class^="left-action-wrapper-"],
+.line-item div[class^="right-action-wrapper-"] {
+    width: 15%;
+    text-align: center;
+    margin: 5px;
+}
+
+.line-item div[class^="value-card-"] {
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.line-item div[class^="type-card-"] {
+    width: 20%;
+    text-align: center;
+    border-left: 1px solid;
+}
+
+.line-item button[class^="btn-"] {
+    margin: 0px 1px;
+    outline: none;
+    cursor: pointer;
+    color: white;
+}
+
+.line-item button[class^="btn-add-"] {
+    border: 1px solid #28a745;
+    background: #28a745;
+}
+
+.line-item button[class^="btn-del-"] {
+    border: 1px solid #dc3545;
+    background: #dc3545;
+}
+.line-item button[class^="btn-up-"],
+.line-item button[class^="btn-down-"] {
+    border: 1px solid #007bff;
+    background: #007bff;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    border: none;
+    background-color: inherit;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
