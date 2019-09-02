@@ -4457,10 +4457,12 @@ body .json-root div.focused {
 
 .line-item div[class^="key-card-"] {
     width: 25%;
+    cursor: pointer;
 }
 
 .line-item div[class^="index-card-"] {
     width: 10%;
+    cursor: pointer;
 }
 
 .line-item div[class^="value-wrapper-"] {
@@ -4478,12 +4480,14 @@ body .json-root div.focused {
     width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .line-item div[class^="type-card-"] {
     width: 20%;
     text-align: center;
     border-left: 1px solid;
+    cursor: pointer;
 }
 
 .line-item button[class^="btn-"] {
@@ -4507,6 +4511,11 @@ body .json-root div.focused {
     border: 1px solid #007bff;
     background: #007bff;
 }
+
+.breadcrumb div[class^="path-"] {
+    cursor: pointer;
+}
+
 
 .dropdown {
     float: left;

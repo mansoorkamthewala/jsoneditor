@@ -165,16 +165,33 @@ Editor.prototype.setJSON = function (json) {
     // process parsed JOSN
     this.json = jsonUtil.processData(parsedJSON);
 
+    // Make Breadcrumb empty
+    this.breadcrumb.innerHTML = '';
+
     // Draw Json Structure view
     // first make target empty
     jsonView.target.innerHTML = '';
     jsonView.populateJSON(this.json, jsonView.target);
+
+    // reset breadcrumb path
+    actions.resetPath();
 
     // Draw json editor starting with root
     // first make target empty
     editorView.target.innerHTML = '';
     editorView.populateEditor(this.json, editorView.target);
 };
+
+/**
+ * Apply any changes to editor view and redraw it.
+ * @param {Array} json - Arrau representing current selected path
+ */
+Editor.prototype.applyChange = function (path) {
+    // start with emptying editor view
+    editorView.target.innerHTML = '';
+    // redraws editor
+    editorView.populateEditor(this.json, editorView.target, path);
+}
 
 // export Editor module
 Editor.default = Editor;

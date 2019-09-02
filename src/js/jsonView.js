@@ -80,7 +80,7 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
         parent.appendChild(lineItem1);
 
         // populate data within { } | [ ]
-        objectDataWrapper = domUtil.createDomElementWithClass('div', `data-level-${json.level}`);
+        objectDataWrapper = domUtil.createDomElementWithClass('div', `data-level-${json.level} ${json.key || `array-${keyIndex}`}`);
         // recursively populate each Object property OR array item into data wrapper
         _.forEach(json.values, function (i, idx) {
             objectDataWrapper = jsonView.populateJSON(i, objectDataWrapper, idx, idx !== json.values.length - 1);
