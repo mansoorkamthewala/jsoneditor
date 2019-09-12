@@ -9,3 +9,12 @@ exports.TYPES = {
 	NUMBER: 'number',
 	NULL: 'null'
 };
+// default values
+exports.DEFAULTS = {
+	'object': {},
+	'array': [],
+	'string': '',
+	'boolean': false,
+	'number': 0,
+	'null': null
+};

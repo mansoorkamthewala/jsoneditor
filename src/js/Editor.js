@@ -3,8 +3,8 @@
 var domUtil = require('./utilities/basicDOMUtil');
 var jsonUtil = require('./utilities/jsonParseUtil');
 var actions = require('./business/actions');
-var jsonView = require('./jsonView');
-var editorView = require('./editorView');
+var jsonView = require('./jsonView/jsonView');
+var editorView = require('./editorView/editorView');
 
 // load css
 var css = require('../css/editor.css');
@@ -184,9 +184,17 @@ Editor.prototype.setJSON = function (json) {
 
 /**
  * Apply any changes to editor view and redraw it.
- * @param {Array} json - Arrau representing current selected path
+ * @param {Array} json - Array representing current selected path
+ * @param {Boolean} updateJSONView - flag that determined if json view needs to be redrawn
  */
-Editor.prototype.applyChange = function (path) {
+Editor.prototype.applyChange = function (path, updateJSONView = false) {
+    // only update JSON structure view if needed
+    if (updateJSONView) {
+        // start with emptying json view
+        jsonView.target.innerHTML = '';
+        // redraws JSON structure view
+        jsonView.populateJSON(this.json, jsonView.target);
+    }
     // start with emptying editor view
     editorView.target.innerHTML = '';
     // redraws editor

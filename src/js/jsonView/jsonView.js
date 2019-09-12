@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var domUtil = require('./utilities/basicDOMUtil');
-var jsonUtil = require('./utilities/jsonViewUtil');
-var TYPES = require('./constants').TYPES;
+var domUtil = require('../utilities/basicDOMUtil');
+var jsonUtil = require('./jsonViewUtil');
+var TYPES = require('../constants').TYPES;
 
 var jsonView = {};
 
