@@ -16,7 +16,7 @@ function getNewValue (form, type, oldValue) {
     var result;
     switch (type) {
     case TYPES.OBJECT:
-        result = oldValue.type !== TYPES.OBJECT ? {} : oldValue.values;
+        result = oldValue.type !== TYPES.OBJECT ? [] : oldValue.values;
         break;
     case TYPES.ARRAY:
         result = oldValue.type !== TYPES.ARRAY ? [] : oldValue.values;
@@ -51,7 +51,7 @@ function getFormForValue (data) {
         result.innerText = '{...}';
         break;
     case TYPES.ARRAY:
-        result.innerHTML = '[...]';
+        result.innerText = '[...]';
         break;
     case TYPES.STRING:
         result.appendChild(domUtil.createTextArea(data.values));
@@ -147,6 +147,10 @@ exports.getRightActionCard = function (index) {
 
     buttonAdd.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-plus'));
     buttonDel.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-times'));
+
+    buttonAdd.onclick = actions.addItem.bind(actions, index);
+    buttonDel.onclick = actions.deleteItem.bind(actions, index);
+
     wrapper.appendChild(buttonAdd);
     wrapper.appendChild(buttonDel);
     return wrapper;
@@ -158,15 +162,19 @@ exports.getRightActionCard = function (index) {
  * @param {Number} index - index in the data structure
  * @return {Element} new DOM element
  */
-exports.getLeftActionCard = function (index) {
+exports.getLeftActionCard = function (index = -1) {
     var wrapper = domUtil.createDomElementWithClass('div', `left-action-wrapper-${index}`),
-        buttonDel = domUtil.createDomElementWithClass('button', `btn-up-${index}`),
-        buttonAdd = domUtil.createDomElementWithClass('button', `btn-down-${index}`);
+        buttonUp = domUtil.createDomElementWithClass('button', `btn-up-${index}`),
+        buttonDown = domUtil.createDomElementWithClass('button', `btn-down-${index}`);
 
-    buttonAdd.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-arrow-up'));
-    buttonDel.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-arrow-down'));
-    wrapper.appendChild(buttonAdd);
-    wrapper.appendChild(buttonDel);
+    buttonUp.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-arrow-up'));
+    buttonDown.appendChild(domUtil.createDomElementWithClass('i', 'fas fa-arrow-down'));
+
+    buttonUp.onclick = actions.moveItem.bind(actions, index, 'up');
+    buttonDown.onclick = actions.moveItem.bind(actions, index, 'down');
+
+    wrapper.appendChild(buttonUp);
+    wrapper.appendChild(buttonDown);
     return wrapper;
 };
 
@@ -232,7 +240,7 @@ function handleKeyInputFinish (oldValue) {
     // remove onclick handler
     this.keyInput.getElementsByTagName('button')[0].onclick = null;
     // mark it as not in use anymore
-    this.keyInputInUse = false;
+    actions.keyInputInUse = false;
     // remove key input
     parent.removeChild(parent.childNodes[0]);
     // trigger action to save to the JSON
@@ -245,14 +253,14 @@ function handleKeyInputFinish (oldValue) {
  * @param {Object} event - triggered event
  */
 exports.handleKeyCardClick = function (currentText, event) {
-    if (this.keyInputInUse || this.valueInputInUse) {
+    if (actions.keyInputInUse || actions.valueInputInUse) {
         // if in edit mode, do nothing and just return
         return;
     }
     var target = event.target,
         parent = target.parentNode;
     // mark it as in use
-    this.keyInputInUse = true;
+    actions.keyInputInUse = true;
     // set value on input
     this.keyInput.getElementsByTagName('input')[0].value = currentText;
     // set onclick for key input button
@@ -290,7 +298,7 @@ function handleValueInputFinish (oldValue) {
     this.valueInput.getElementsByTagName('button')[0].onclick = null;
     domUtil.removeAllChildNodes(form);
     // mark it as not in use
-    this.valueInputInUse = false;
+    actions.valueInputInUse = false;
     parent.removeChild(childToRemove);
     actions.handleValueChange(oldValue, {type: newType, values: newValue});
 }
@@ -316,7 +324,7 @@ function handleTypeChange (oldData, newType) {
  * @param {Object} event - triggered event
  */
 exports.handleValueCardClick = function (data, event) {
-    if (this.valueInputInUse || this.key) {
+    if (actions.valueInputInUse || actions.keyInputInUse) {
         // if in edit mode, do nothing and just return
         return;
     }
@@ -326,13 +334,15 @@ exports.handleValueCardClick = function (data, event) {
         dropdown,
         form;
     // mark it as in use
-    this.valueInputInUse = true;
+    actions.valueInputInUse = true;
     // set type on dropdown
     dropdown = this.valueInput.getElementsByClassName('dropbtn')[0];
     form = this.valueInput.getElementsByClassName('value-input-form')[0];
     dropdown.innerText = data.type;
     dropdown.onchange = handleTypeChange.bind(this, data);
 
+    // remove all children first for the form
+    domUtil.removeAllChildNodes(form);
     // set form for the current value
     form.appendChild(getFormForValue(data));
 

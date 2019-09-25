@@ -4433,6 +4433,12 @@ body .json-root div.focused {
     padding: 5px;
 }
 
+.wrapper .editor-toolbar span {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    padding-left: 5px;
+}
+
 .wrapper .breadcrumb {
     background-color: #f8f8f8;
     box-sizing: border-box;

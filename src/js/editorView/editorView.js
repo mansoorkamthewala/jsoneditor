@@ -59,40 +59,62 @@ editorView.populateEditor = function (json, parent, path = []) {
 
     switch (data.type) {
     case TYPES.OBJECT:
-        _.forEach(data.values, function (i, idx) {
+        if (data.values.length) {
+            _.forEach(data.values, function (i, idx) {
+                lineItem = getLineElement();
+                keyCard = editorUtil.getKeyCard(i.key, idx);
+
+                // add click event listener
+                keyCard.onclick = editorUtil.handleKeyCardClick.bind(editorView, i.key);
+
+                lineItem.appendChild(keyCard);
+                valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
+
+                // add click event listener
+                valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
+                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
+
+                lineItem.appendChild(valueCard);
+                lineItem.appendChild(editorUtil.getRightActionCard(idx));
+                parent.appendChild(lineItem);
+            });
+        } else {
             lineItem = getLineElement();
-            keyCard = editorUtil.getKeyCard(i.key, idx);
-
-            // add click event listener
-            keyCard.onclick = editorUtil.handleKeyCardClick.bind(editorView, i.key);
-
+            keyCard = editorUtil.getKeyCard();
             lineItem.appendChild(keyCard);
-            valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
-
-            // add click event listener
-            valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
-            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
-
+            valueCard = editorUtil.getValueCard('-', data.type, -1);
+            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, data);
             lineItem.appendChild(valueCard);
-            lineItem.appendChild(editorUtil.getRightActionCard(idx));
+            lineItem.appendChild(editorUtil.getRightActionCard(-1));
             parent.appendChild(lineItem);
-        });
+        }
         break;
     case TYPES.ARRAY:
-        _.forEach(data.values, function (i, idx) {
+        if (data.values.length) {
+            _.forEach(data.values, function (i, idx) {
+                lineItem = getLineElement();
+                lineItem.appendChild(editorUtil.getLeftActionCard(idx));
+                lineItem.appendChild(editorUtil.getIndexCard(idx));
+                valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
+
+                // add click event listener
+                valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
+                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
+
+                lineItem.appendChild(valueCard);
+                lineItem.appendChild(editorUtil.getRightActionCard(idx));
+                parent.appendChild(lineItem);
+            });
+        } else {
             lineItem = getLineElement();
-            lineItem.appendChild(editorUtil.getLeftActionCard(idx));
-            lineItem.appendChild(editorUtil.getIndexCard(idx));
-            valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
-
-            // add click event listener
-            valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
-            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
-
+            lineItem.appendChild(editorUtil.getLeftActionCard());
+            lineItem.appendChild(editorUtil.getIndexCard('-'));
+            valueCard = editorUtil.getValueCard('-', data.type, -1);
+            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, data);
             lineItem.appendChild(valueCard);
-            lineItem.appendChild(editorUtil.getRightActionCard(idx));
+            lineItem.appendChild(editorUtil.getRightActionCard(-1));
             parent.appendChild(lineItem);
-        });
+        }
         break;
     case TYPES.STRING:
     case TYPES.NUMBER:

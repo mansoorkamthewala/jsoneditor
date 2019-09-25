@@ -42,3 +42,29 @@ function processData (data, level = 0) {
 }
 
 exports.processData = processData;
+
+/**
+ * UnProcess data into raw JSON data to be exported to JSON file.
+ * @param {Object} data - data to be unprocessed and converted to JSON
+ * @return {Object} raw data (JSON)
+ */
+function unprocessData (data) {
+    var result;
+
+    if (data.type === TYPES.ARRAY) {
+        result = [];
+        _.forEach(data.values, function (i) {
+            result.push(unprocessData(i));
+        });
+    } else if (data.type === TYPES.OBJECT) {
+        result = {};
+        _.forEach(data.values, function (i) {
+            result[i.key] = unprocessData(i);
+        });
+    } else {
+        result = data.values;
+    }
+    return result;
+}
+
+exports.unprocessData = unprocessData;

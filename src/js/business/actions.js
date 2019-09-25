@@ -1,9 +1,13 @@
 'use strict';
 var domUtil = require('./../utilities/basicDOMUtil');
+var jsonUtil = require('./../utilities/jsonParseUtil');
+var TYPES = require('../constants').TYPES;
 
 var actions = {
     editor: null,
-    path: []
+    path: [],
+    valueInputInUse: false,
+    keyInputInUse: false
 };
 
 /**
@@ -35,15 +39,72 @@ actions.initialize = function (editor) {
 };
 
 /**
+ * resets Value Input and Key Input use flag
+ */
+actions.setInputUse = function () {
+    this.valueInputInUse = false;
+    this.keyInputInUse = false;
+};
+/**
  * resets path for the breadcrumb, resets focus on
  * JSON structure view and add root to the breadcrumb.
  */
 actions.resetPath = function () {
     this.path = [];
+    this.setInputUse();
     // set focus
     this.setFocus();
     // start breadcrumb
     this.startBreadcrumb();
+};
+
+/**
+ * Process JSON and set it on Editor.
+ * Triggers JSON structure view to re-render with loaded JSON.
+ * @param {String} json - Stringified JSON structure which is read from File
+ */
+actions.setJSON = function (json) {
+    var parsedJSON;
+    try {
+        parsedJSON = JSON.parse(json);
+    } catch (error) {
+        alert('Uploaded JSON file is not valid JSON');
+        // do nothing
+        return;
+    }
+    // process parsed JOSN
+    this.editor.json = jsonUtil.processData(parsedJSON);
+    this.editor.active = true;
+
+    this.editor.applyChange(this.path, true);
+    // Make Breadcrumb empty
+    this.editor.breadcrumb.innerHTML = '';
+    // reset breadcrumb path
+    this.resetPath();
+};
+
+/**
+ * Downloads JSON file to the local disk
+ * @param {String} fileName - Name of the file to be created
+ */
+actions.downloadJSON = function (fileName) {
+    if (!this.editor.active) {
+        return;
+    }
+    var data = JSON.stringify(jsonUtil.unprocessData(this.editor.json), null, 4),
+        dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(data);
+
+    var anchorTag = domUtil.createDomElementWithClass('a');
+    anchorTag.setAttribute('href', dataUri);
+    anchorTag.setAttribute('download', fileName);
+    anchorTag.click();
+};
+
+/**
+ * Action that triggers new JSON with Object to start with
+ */
+actions.startNewJSON = function () {
+    this.setJSON('{}');
 };
 
 /**
@@ -214,7 +275,7 @@ actions.handleValueChange = function (oldValue, newValue) {
 
     if (_.isString(oldValue.key)) {
         itemToUpdate = _.find(data.values, {key: oldValue.key});
-    } else if (_.isNumber(oldValue.key)) {
+    } else if (_.isNumber(oldValue.key) && !_.isNaN(oldValue.key)) {
         itemToUpdate = data.values[oldValue.key];
     } else {
         isRootEdited = true;
@@ -234,4 +295,87 @@ actions.handleValueChange = function (oldValue, newValue) {
         this.startBreadcrumb();
     }
 };
+
+/**
+ * Creates a unique key for object type data
+ * @param {Object} data Data in for which a unique key is needed
+ */
+function getUniqueKey (data) {
+    var index = data.length,
+        predicate = function (i) { return i.key === `key#${index}`; };
+    while (_.findIndex(data, predicate) >= 0) {
+        index++;
+    }
+    return `key#${index}`;
+}
+
+/**
+ * Adds item to the Object or Array type of data. Triggers editor and
+ * JSON structure view to re-render
+ * @param {Number} index - Location at which new item will be added
+ */
+actions.addItem = function (index) {
+    var currentData = this.extractData(),
+    newItem = {
+            level: currentData.level + 1,
+            type: 'null',
+            values: null
+        };
+
+    if (currentData.type === TYPES.OBJECT) {
+        newItem.key = getUniqueKey(currentData.values);
+    }
+    currentData.values.splice(index + 1, 0, newItem);
+    this.editor.applyChange(this.path, true);
+    // sets back the focus
+    this.setFocus();
+    this.setInputUse();
+};
+
+/**
+ * Deletes item from the Object or Array type of data. Triggers editor and
+ * JSON structure view to re-render
+ * @param {Number} index - Location from which item will be removed
+ */
+actions.deleteItem = function (index) {
+    var currentData;
+    if (index < 0) {
+        return
+    } else {
+        currentData = this.extractData();
+        currentData.values.splice(index, 1);
+        this.editor.applyChange(this.path, true);
+        // sets back the focus
+        this.setFocus();
+        this.setInputUse();
+    }
+};
+
+/**
+ * Moves item from  Array type of data. Triggers editor and
+ * JSON structure view to re-render
+ * @param {Number} index - Location from which item will be moved
+ * @param {String} direction - Data will be moved in array either up or down
+ */
+actions.moveItem = function (index, direction) {
+    var currentData = this.extractData(),
+        tempHolder;
+    if (index < 0 ||
+        (direction === 'up' && index === 0) ||
+        (direction === 'down' && index === currentData.values.length - 1)) {
+        return
+    } else {
+        tempHolder = currentData.values.splice(index, 1);
+        if (direction === 'up') {
+            currentData.values.splice(index - 1, 0, tempHolder[0]);
+        } else {
+            currentData.values.splice(index + 1, 0, tempHolder[0]);
+        }
+        this.editor.applyChange(this.path, true);
+        // sets back the focus
+        this.setFocus();
+        this.setInputUse();
+    }
+}
+
 module.exports = actions;

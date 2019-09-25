@@ -1,9 +1,9 @@
 'use strict';
 
 var domUtil = require('./utilities/basicDOMUtil');
-var jsonUtil = require('./utilities/jsonParseUtil');
 var actions = require('./business/actions');
 var jsonView = require('./jsonView/jsonView');
+var toolbarView = require('./toolbar/toolbarView');
 var editorView = require('./editorView/editorView');
 
 // load css
@@ -29,18 +29,19 @@ function Editor (targetElement) {
 Editor.prototype.create = function (targetElement) {
     this.targetElement = targetElement;
     this.json = {};
+    this.active = false;
     // initialize actions
     actions.initialize(this);
     this.wrapperDiv = domUtil.createDomElementWithClass('div', 'wrapper');
 
     // append items to wrapper
     // toolbar
-    this.wrapperDiv.appendChild(this.createToolBar());
+    this.wrapperDiv.appendChild(toolbarView.createToolBar());
     // breadcrumb
     this.breadcrumb = this.createBreadcrumb();
     this.wrapperDiv.appendChild(this.breadcrumb);
     // editor
-    this.wrapperDiv.appendChild(this.createEditor());
+    this.wrapperDiv.appendChild(this.createViews());
 
     // now append wrapper to target element
     this.targetElement.appendChild(this.wrapperDiv);
@@ -52,7 +53,7 @@ Editor.prototype.create = function (targetElement) {
  * second view on right is JSON structure view (to view JSON)
  * @return {Element} editor wrapper view
  */
-Editor.prototype.createEditor = function () {
+Editor.prototype.createViews = function () {
     this.editorWrapper = domUtil.createDomElementWithClass('div', 'editor-wrapper row');
     this.editorDiv = domUtil.createDomElementWithClass('div', 'editor-view col-50');
     this.treeView = domUtil.createDomElementWithClass('div', 'display-view col-50');
@@ -73,72 +74,6 @@ Editor.prototype.createEditor = function () {
 };
 
 /**
- * Creates toolbar view.
- * Toolbar  consist of buttons to upload JSON, start new JSON and download JSON
- * @return {Element} toolbar
- */
-Editor.prototype.createToolBar = function () {
-    var toolbar,
-        button,
-        input,
-        _this = this;
-
-    // Check for the various File API support.
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-        // create toolbar
-        toolbar = domUtil.createDomElementWithClass('div', 'editor-toolbar row');
-
-        // input button to upload JSON file and is set to not display
-        input = domUtil.createDomElementWithClass('input', 'file-input');
-        input.type = 'file';
-        input.setAttribute('id', 'file-upload');
-        input.setAttribute('style', 'display:none');
-        // button to proxy action for input (type=file)
-        button = domUtil.createDomElementWithClass('button', 'upload-button');
-        button.setAttribute('id', 'upload-button');
-        button.setAttribute('for', 'file-upload');
-        button.innerText = 'Upload JSON';
-
-        // handle file selection by User
-        var handleFileSelect = function (event) {
-            var uploadedFile = event.target.files[0];
-            // matches for correct JSON type, if not alert User.
-            if (!uploadedFile.type.match('json')) {
-                alert('Please upload a valid JSON file');
-                return;
-            }
-            
-            var reader = new FileReader();
-            // triggers when reading file is complete
-            reader.onload = function (readFile) {
-                // set's JSON on editor
-                _this.setJSON(readFile.target.result);
-            };
-            // reading file begins
-            reader.readAsText(uploadedFile);
-        }
-
-        // button click event which in return trigger click for input(type=file)
-        button.addEventListener('click', function () {
-            document.getElementById('file-upload').click();
-        }, false);
-        // change event for input (type=file)
-        input.addEventListener('change', handleFileSelect, false);
-        // must set value to null on click, so upload of same file can 
-        // trigger change event
-        input.addEventListener('click', function () {
-            this.value = null;
-        }, false);
-
-        toolbar.appendChild(button);
-        toolbar.appendChild(input);
-    } else {
-        alert('The File APIs are not fully supported in this browser.');
-    }
-    return toolbar;
-};
-
-/**
  * Creates Breadcrumb view.
  * Breadcrumb view will be used for easy navigation through JSON
  * @return {Element} breadcrumb
@@ -146,40 +81,6 @@ Editor.prototype.createToolBar = function () {
 Editor.prototype.createBreadcrumb = function () {
     var breadcrumb = domUtil.createDomElementWithClass('div', 'breadcrumb row');;
     return breadcrumb;
-};
-
-/**
- * Process JSON and set it on Editor.
- * Triggers JSON structure view to re-render with loaded JSON.
- * @param {String} json - Stringified JSON structure which is read from File
- */
-Editor.prototype.setJSON = function (json) {
-    var parsedJSON;
-    try {
-        parsedJSON = JSON.parse(json);
-    } catch (error) {
-        alert('Uploaded JSON file is not valid JSON');
-        // do nothing
-        return;
-    }
-    // process parsed JOSN
-    this.json = jsonUtil.processData(parsedJSON);
-
-    // Make Breadcrumb empty
-    this.breadcrumb.innerHTML = '';
-
-    // Draw Json Structure view
-    // first make target empty
-    jsonView.target.innerHTML = '';
-    jsonView.populateJSON(this.json, jsonView.target);
-
-    // reset breadcrumb path
-    actions.resetPath();
-
-    // Draw json editor starting with root
-    // first make target empty
-    editorView.target.innerHTML = '';
-    editorView.populateEditor(this.json, editorView.target);
 };
 
 /**
