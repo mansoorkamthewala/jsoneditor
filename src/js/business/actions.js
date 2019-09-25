@@ -52,8 +52,7 @@ actions.setInputUse = function () {
 actions.resetPath = function () {
     this.path = [];
     this.setInputUse();
-    // set focus
-    this.setFocus();
+
     // start breadcrumb
     this.startBreadcrumb();
 };
@@ -76,11 +75,13 @@ actions.setJSON = function (json) {
     this.editor.json = jsonUtil.processData(parsedJSON);
     this.editor.active = true;
 
-    this.editor.applyChange(this.path, true);
     // Make Breadcrumb empty
     this.editor.breadcrumb.innerHTML = '';
     // reset breadcrumb path
     this.resetPath();
+    this.editor.applyChange(this.path, true);
+    // set focus
+    this.setFocus();
 };
 
 /**
@@ -125,10 +126,10 @@ actions.setFocus = function () {
     // build query based on current path
     for (i = 0; i < this.path.length; i++) {
         if (_.isString(this.path[i])) {
-            query += ` .${this.path[i]}`;
+            query += ` .data-level-${i + 1}.${this.path[i]}`;
         }
         if (_.isNumber(this.path[i])) {
-            query += ` .data-level-${this.path.length}.array-${this.path[i]}`;
+            query += ` .data-level-${i + 1}.array-${this.path[i]}`;
         }
     }
     //get parent data-level container
@@ -290,7 +291,7 @@ actions.handleValueChange = function (oldValue, newValue) {
     this.setFocus();
 
     // if root was edited, breadcrumb must be initialized again
-    if (isRootEdited) {
+    if (isRootEdited && oldValue.level === 0) {
         this.editor.breadcrumb.innerHTML = '';
         this.startBreadcrumb();
     }
@@ -306,7 +307,7 @@ function getUniqueKey (data) {
     while (_.findIndex(data, predicate) >= 0) {
         index++;
     }
-    return `key#${index}`;
+    return `key-${index}`;
 }
 
 /**

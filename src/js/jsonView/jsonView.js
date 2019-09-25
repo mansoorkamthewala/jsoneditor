@@ -81,10 +81,14 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
 
         // populate data within { } | [ ]
         objectDataWrapper = domUtil.createDomElementWithClass('div', `data-level-${json.level} ${json.key || `array-${keyIndex}`}`);
-        // recursively populate each Object property OR array item into data wrapper
-        _.forEach(json.values, function (i, idx) {
-            objectDataWrapper = jsonView.populateJSON(i, objectDataWrapper, idx, idx !== json.values.length - 1);
-        });
+        if (json.values.length) {
+            // recursively populate each Object property OR array item into data wrapper
+            _.forEach(json.values, function (i, idx) {
+                objectDataWrapper = jsonView.populateJSON(i, objectDataWrapper, idx, idx !== json.values.length - 1);
+            });
+        } else {
+            objectDataWrapper = jsonView.populateJSON({level: json.level + 1}, objectDataWrapper, 0, false);
+        }
         // append data wrapper to parent
         parent.appendChild(objectDataWrapper);
 
@@ -108,6 +112,11 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
         parent.appendChild(lineItem1);
         break;
     default:
+        lineItem1 = getLineElement(json.level);
+        // append value
+        lineItem1.appendChild(getValue('&nbsp;'.repeat(4), json.level, false));
+        // and finally append line item to the parent
+        parent.appendChild(lineItem1);
         break;
     }
 
