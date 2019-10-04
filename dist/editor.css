@@ -4619,3 +4619,35 @@ body .json-root div.focused {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+.alert {
+    width: 25%;
+    height: 50px;
+    right: 20px;
+    box-shadow: 5px 10px 20px #888888;
+    border-radius: 4px;
+    opacity: 0;
+    position: absolute;
+    z-index: 10;
+}
+
+.alert-text {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    height: inherit;
+    padding: 0px 5px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.wrapper .alert {
+    transform: translateY(0);
+    transition-timing-function: ease-in;
+    transition: 0.2s;
+}
+.wrapper .alert-is-shown.alert {
+    transition: 0.25s;
+    transition-timing-function: ease-out;
+    transform: translateY(5px);
+    opacity: 1;
+}

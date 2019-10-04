@@ -4,6 +4,7 @@ var domUtil = require('./utilities/basicDOMUtil');
 var actions = require('./business/actions');
 var jsonView = require('./jsonView/jsonView');
 var toolbarView = require('./toolbar/toolbarView');
+var notify = require('./notification/notify');
 var editorView = require('./editorView/editorView');
 
 // load css
@@ -35,6 +36,8 @@ Editor.prototype.create = function (targetElement) {
     this.wrapperDiv = domUtil.createDomElementWithClass('div', 'wrapper');
 
     // append items to wrapper
+    // notifications
+    this.wrapperDiv.appendChild(notify.initialize());
     // toolbar
     this.wrapperDiv.appendChild(toolbarView.createToolBar());
     // breadcrumb

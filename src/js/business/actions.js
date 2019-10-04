@@ -1,6 +1,7 @@
 'use strict';
 var domUtil = require('./../utilities/basicDOMUtil');
 var jsonUtil = require('./../utilities/jsonParseUtil');
+var notify = require('./../notification/notify');
 var TYPES = require('../constants').TYPES;
 
 var actions = {
@@ -61,13 +62,14 @@ actions.resetPath = function () {
  * Process JSON and set it on Editor.
  * Triggers JSON structure view to re-render with loaded JSON.
  * @param {String} json - Stringified JSON structure which is read from File
+ * @param {Boolean} skipNotification - Flag to determine if user needs to be not notified
  */
-actions.setJSON = function (json) {
+actions.setJSON = function (json, skipNotification) {
     var parsedJSON;
     try {
         parsedJSON = JSON.parse(json);
     } catch (error) {
-        alert('Uploaded JSON file is not valid JSON');
+        this.notifyUser('Uploaded JSON file is not valid JSON', 'error');
         // do nothing
         return;
     }
@@ -82,6 +84,10 @@ actions.setJSON = function (json) {
     this.editor.applyChange(this.path, true);
     // set focus
     this.setFocus();
+
+    if (!skipNotification) {
+        this.notifyUser('Successfully uploaded JSON', 'success', 2500);
+    }
 };
 
 /**
@@ -105,7 +111,8 @@ actions.downloadJSON = function (fileName) {
  * Action that triggers new JSON with Object to start with
  */
 actions.startNewJSON = function () {
-    this.setJSON('{}');
+    this.setJSON('{}', true);
+    this.notifyUser('New JSON initiated successfully', 'success', 2500);
 };
 
 /**
@@ -249,9 +256,9 @@ actions.handleBreadcrumbClick = function (newPath) {
  * @param {String} newValue - new key value
  */
 actions.handleKeyChange = function (oldValue, newValue) {
-    var data = this.extractData();
+    var data = this.extractData(),
+        itemToUpdate = _.find(data.values, {key: oldValue});
 
-    var itemToUpdate = _.find(data.values, {key: oldValue});
     if (itemToUpdate) {
         itemToUpdate.key = newValue;
     }
@@ -261,6 +268,17 @@ actions.handleKeyChange = function (oldValue, newValue) {
     // sets back the focus
     this.setFocus();
 };
+
+/**
+ * Utility to find if key is in use at current level
+ * @param {String} newValue - new value to be checked for duplication
+ * @returns {Boolean} return boolean value is key is duplicated or not
+ */
+actions.isKeyInUse = function (newValue) {
+    var data = this.extractData(),
+        keyExists = _.find(data.values, {key: newValue});
+    return !!keyExists;
+}
 
 /**
  * Event callback when Value for an object is changed.
@@ -377,6 +395,21 @@ actions.moveItem = function (index, direction) {
         this.setFocus();
         this.setInputUse();
     }
+}
+
+/**
+ * Notifies User with banner. It uses Notification module to show banner
+ * @param {String} message - Text to be presented to the User
+ * @param {String} level - Determines type of the banner, error and success are supported
+ * @param {Number} time - determines how long the banner (in milliseconds) will be presented to the User. 
+ */
+actions.notifyUser = function (message, level = 'error', time = 5000) {
+    // message is required
+    if (!message) {
+        // nothing to show
+        return;
+    }
+    notify.displayNotification(message, level, time);
 }
 
 module.exports = actions;

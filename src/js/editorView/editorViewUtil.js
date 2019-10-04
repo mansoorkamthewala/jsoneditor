@@ -83,6 +83,7 @@ function validateValue (type, newValue) {
     case TYPES.NUMBER:
         if (isNaN(newValue)) {
             valid = false;
+            actions.notifyUser('Invalid number', 'error', 2500);
         }
         break;
     }
@@ -233,6 +234,11 @@ function handleKeyInputFinish (oldValue) {
     // run validation
     if (_.isEmpty(newValue)) {
         // if key is left empty, do nothing
+        actions.notifyUser('Object Key cannot be empty', 'error', 2500);
+        return;
+    } else if (actions.isKeyInUse(newValue)) {
+        // if key is in use, do nothing
+        actions.notifyUser('Object Key already exist', 'error', 2500);
         return;
     }
     // remove input value

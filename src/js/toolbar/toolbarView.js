@@ -51,7 +51,7 @@ toolbar.createToolBar = function () {
             var uploadedFile = event.target.files[0];
             // matches for correct JSON type, if not alert User.
             if (!uploadedFile.type.match('json')) {
-                alert('Please upload a valid JSON file');
+                actions.notifyUser('Please upload a valid JSON file', 'error');
                 return;
             }
             _this.setFileName(uploadedFile.name);
@@ -94,7 +94,7 @@ toolbar.createToolBar = function () {
         bar.appendChild(downloadButton);
         bar.appendChild(fileNameBox);
     } else {
-        alert('The File APIs are not fully supported in this browser.');
+        actions.notifyUser('The File APIs are not fully supported in this browser.', 'error');
     }
     return bar;
 };
