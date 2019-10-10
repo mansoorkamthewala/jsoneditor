@@ -356,4 +356,4 @@ exports.handleValueCardClick = function (data, event) {
     this.valueInput.getElementsByTagName('button')[0].onclick = handleValueInputFinish.bind(this, _.cloneDeep(data));
     // replace card with value Input form
     parentMost.replaceChild(this.valueInput, parentToReplace);
-}
+};

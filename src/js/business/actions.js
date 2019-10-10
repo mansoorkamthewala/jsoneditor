@@ -105,6 +105,7 @@ actions.downloadJSON = function (fileName) {
     anchorTag.setAttribute('href', dataUri);
     anchorTag.setAttribute('download', fileName);
     anchorTag.click();
+    this.notifyUser('JSON downloaded successfully', 'success', 2500);
 };
 
 /**
