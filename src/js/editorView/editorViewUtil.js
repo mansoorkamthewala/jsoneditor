@@ -326,17 +326,15 @@ function handleTypeChange (oldData, newType) {
 
 /**
  * Replace the value card with Value Input form and populate current value.
+ * @param {Object} node - Parent value node which needs to be replaced
  * @param {Object} data - current/existing value data
- * @param {Object} event - triggered event
  */
-exports.handleValueCardClick = function (data, event) {
+exports.handleValueCardClick = function (node, data) {
     if (actions.valueInputInUse || actions.keyInputInUse) {
         // if in edit mode, do nothing and just return
         return;
     }
-    var target = event.target,
-        parentToReplace = target.parentNode,
-        parentMost = parentToReplace.parentNode,
+    var parentMost = node.parentNode,
         dropdown,
         form;
     // mark it as in use
@@ -355,5 +353,5 @@ exports.handleValueCardClick = function (data, event) {
     // set onclick for key input button
     this.valueInput.getElementsByTagName('button')[0].onclick = handleValueInputFinish.bind(this, _.cloneDeep(data));
     // replace card with value Input form
-    parentMost.replaceChild(this.valueInput, parentToReplace);
+    parentMost.replaceChild(this.valueInput, node);
 };

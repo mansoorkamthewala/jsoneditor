@@ -72,7 +72,7 @@ editorView.populateEditor = function (json, parent, path = []) {
 
                 // add click event listener
                 valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
-                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
+                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, valueCard, i);
 
                 lineItem.appendChild(valueCard);
                 lineItem.appendChild(editorUtil.getRightActionCard(idx));
@@ -83,7 +83,7 @@ editorView.populateEditor = function (json, parent, path = []) {
             keyCard = editorUtil.getKeyCard();
             lineItem.appendChild(keyCard);
             valueCard = editorUtil.getValueCard('-', data.type, -1);
-            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, data);
+            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, valueCard, data);
             lineItem.appendChild(valueCard);
             lineItem.appendChild(editorUtil.getRightActionCard(-1));
             parent.appendChild(lineItem);
@@ -99,7 +99,7 @@ editorView.populateEditor = function (json, parent, path = []) {
 
                 // add click event listener
                 valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
-                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, i);
+                valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, valueCard, i);
 
                 lineItem.appendChild(valueCard);
                 lineItem.appendChild(editorUtil.getRightActionCard(idx));
@@ -110,7 +110,7 @@ editorView.populateEditor = function (json, parent, path = []) {
             lineItem.appendChild(editorUtil.getLeftActionCard());
             lineItem.appendChild(editorUtil.getIndexCard('-'));
             valueCard = editorUtil.getValueCard('-', data.type, -1);
-            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, data);
+            valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, valueCard, data);
             lineItem.appendChild(valueCard);
             lineItem.appendChild(editorUtil.getRightActionCard(-1));
             parent.appendChild(lineItem);
@@ -127,7 +127,7 @@ editorView.populateEditor = function (json, parent, path = []) {
 
         valueCard = editorUtil.getValueCard(editorUtil.getValueText(data), data.type);
         // add click event listener
-        valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, data);
+        valueCard.childNodes[1].onclick = editorUtil.handleValueCardClick.bind(editorView, valueCard, data);
         lineItem.appendChild(valueCard);
         parent.appendChild(lineItem);
         break;

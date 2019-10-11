@@ -249,8 +249,9 @@ Editor.prototype.addVerticalDragBar = function () {
  * has been populated otherwise it falls back to treeview.
  */
 Editor.prototype.adjustVerticalBarHeight = function () {
-    var height = this.displayJSON.offsetHeight;
-    this.verticalDragBar.style.height = `${height || this.treeView.style.height}${height ? 'px' : ''}`;
+    var height1 = this.displayJSON.offsetHeight,
+        height2 = parseInt(this.treeView.style.height.replace('px', ''), 10);
+    this.verticalDragBar.style.height = `${Math.max(height1, height2)}px`;
 };
 
 // export Editor module
