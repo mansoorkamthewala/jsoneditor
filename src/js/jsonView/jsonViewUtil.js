@@ -1,5 +1,6 @@
 'use strict';
 var domUtil = require('../utilities/basicDOMUtil');
+var actions = require('../business/actions');
 
 /**
  * Create a DOM element with open braces, either { OR [
@@ -23,4 +24,20 @@ exports.getCloseBrace = function (brace, level) {
     var item = domUtil.createDomElementWithClass('div', `key-level-${level} close-brace`);
     item.innerText = brace;
     return item;
+};
+
+/**
+ * Handles Copy OR Paste action triggered from JSON structure view.
+ * @param {Object} data - Data that is being copied or data where the data is being pasted.
+ */
+exports.handleCopyPaste = function (data) {
+    if (!actions.copied) {
+        data.copied = true;
+        actions.handleCopy({
+            value: data.values,
+            type: data.type
+        }, data);
+    } else {
+        actions.handlePaste(data);
+    }
 };

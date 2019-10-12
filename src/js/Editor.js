@@ -110,7 +110,7 @@ Editor.prototype.applyChange = function (path, updateJSONView = false) {
         // start with emptying json view
         jsonView.target.innerHTML = '';
         // redraws JSON structure view
-        jsonView.populateJSON(this.json, jsonView.target);
+        jsonView.populateJSON(this.json, jsonView.target, actions.copied);
         // add height to vertical drag bar
         this.adjustVerticalBarHeight();
     }

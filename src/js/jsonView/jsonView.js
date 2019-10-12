@@ -22,14 +22,23 @@ jsonView.create = function () {
  * Populate JSON structure view with the JSON data
  * @param {Object} json - Processed JSON data
  * @param {Element} parent - Parent element
+ * @param {Boolean} copyMode - True if in copy mode, determines which icon to display
  * @param {Boolean} hasSibling - Flag to indicate to put comma separator
  * @return {Element} - return parent element, now with children data appended
  */
-jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false) {
-    var getLineElement = function (indent) {
+jsonView.populateJSON = function (json, parent, copyMode, keyIndex = 0, hasSibling = false) {
+    var getLineElement = function (indent, addCopyPasteBtn) {
             // crates a line item with appropriate indentation
             var space = '&nbsp;',
-                line = domUtil.createDomElementWithClass('div', 'line-item');
+                line = domUtil.createDomElementWithClass('div', 'line-item'),
+                btnWrapper = domUtil.createDomElementWithClass('div', 'copy-paste-wrapper'),
+                btn = domUtil.createDomElementWithClass('i', `fas fa-${copyMode ? 'paint-roller' : 'copy'}`);
+
+            if (addCopyPasteBtn) {
+                btnWrapper.appendChild(btn);
+            }
+
+            line.appendChild(btnWrapper);
             if (indent > 0) {
                 var indentElement = (domUtil.createDomElementWithClass('span', `indent-level-${indent}`));
                 indentElement.innerHTML = space.repeat(indent * 4);
@@ -45,12 +54,12 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
             // @return {Element}
             return keyElement;
         },
-        getValue = function (value, level, isString) {
+        getValue = function (data) {
             // creates value element with proper css with level
-            var valueElement = domUtil.createDomElementWithClass('div', `value-level-${level}`),
-                quote = isString ? '"' : '',
+            var valueElement = domUtil.createDomElementWithClass('div', `value-level-${data.level}${data.copied ? ' copied' : ''}`),
+                quote = data.type === TYPES.STRING ? '"' : '',
                 comma = hasSibling ? ',' : '';
-            valueElement.innerHTML = `${quote}${value}${quote}${comma}`;
+            valueElement.innerHTML = `${quote}${data.values}${quote}${comma}`;
             // @return {Element}
             return valueElement;
         },
@@ -84,10 +93,10 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
         if (json.values.length) {
             // recursively populate each Object property OR array item into data wrapper
             _.forEach(json.values, function (i, idx) {
-                objectDataWrapper = jsonView.populateJSON(i, objectDataWrapper, idx, idx !== json.values.length - 1);
+                objectDataWrapper = jsonView.populateJSON(i, objectDataWrapper, copyMode, idx, idx !== json.values.length - 1);
             });
         } else {
-            objectDataWrapper = jsonView.populateJSON({level: json.level + 1}, objectDataWrapper, 0, false);
+            objectDataWrapper = jsonView.populateJSON({level: json.level + 1}, objectDataWrapper, copyMode, 0, false);
         }
         // append data wrapper to parent
         parent.appendChild(objectDataWrapper);
@@ -101,13 +110,14 @@ jsonView.populateJSON = function (json, parent, keyIndex = 0, hasSibling = false
     case TYPES.NUMBER:
     case TYPES.BOOLEAN:
     case TYPES.NULL:
-        lineItem1 = getLineElement(json.level);
+        lineItem1 = getLineElement(json.level, true);
+        lineItem1.childNodes[0].onclick = jsonUtil.handleCopyPaste.bind(jsonView, json);
         // start with adding key if available
         if (json.key) {
             lineItem1.appendChild(getKey(json.key, json.level));
         }
         // append value
-        lineItem1.appendChild(getValue(json.values, json.level, json.type === TYPES.STRING));
+        lineItem1.appendChild(getValue(json));
         // and finally append line item to the parent
         parent.appendChild(lineItem1);
         break;

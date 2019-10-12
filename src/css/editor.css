@@ -16,6 +16,10 @@ body .json-root div[class^="key-level-"] {
     font-weight: bold;
 }
 
+body .json-root div[class^="value-level-"].copied {
+    border: 1px dashed;
+}
+
 body .json-root div.focused {
     background-color: #fff888;
 }
@@ -192,6 +196,15 @@ body .json-root div.focused {
     border: 1px solid #28a745;
     cursor: pointer;
     color: white;
+    margin: 0px 1px;
+}
+
+.value-input-toolbar button.value-cancel-button {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+    cursor: pointer;
+    color: white;
+    margin-left: 1px;
 }
 
 .key-input-wrapper button:focus,
@@ -293,4 +306,21 @@ body .json-root div.focused {
     background-color: #000;
     opacity: 0.5;
     cursor: col-resize;
+}
+
+.copy-paste-wrapper {
+    width: 15px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.copy-paste-wrapper .fa-copy,
+.copy-paste-wrapper .fa-paint-roller {
+    display: none;
+}
+
+.line-item:hover .copy-paste-wrapper .fa-copy,
+.line-item:hover .copy-paste-wrapper .fa-paint-roller {
+    display: block;
+    opacity: 0.5;
 }

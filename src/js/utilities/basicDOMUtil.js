@@ -90,11 +90,15 @@ function createValueInput () {
         valueInputToolbar = createDomElementWithClass('div', 'value-input-toolbar'),
         valueInputForm = createDomElementWithClass('div', 'value-input-form'),
         typeDropdown = createDropdownMenu(),
-        button = createDomElementWithClass('button', 'value-input-button'),
-        icon = createDomElementWithClass('i', 'fas fa-check');
+        button1 = createDomElementWithClass('button', 'value-input-button'),
+        icon1 = createDomElementWithClass('i', 'fas fa-check'),
+        button2 = createDomElementWithClass('button', 'value-cancel-button'),
+        icon2 = createDomElementWithClass('i', 'fas fa-times');
 
-    button.appendChild(icon);
-    valueInputToolbar.appendChild(button);
+    button1.appendChild(icon1);
+    button2.appendChild(icon2);
+    valueInputToolbar.appendChild(button2);
+    valueInputToolbar.appendChild(button1);
     valueInputToolbar.appendChild(typeDropdown);
     valueCard.appendChild(valueInputToolbar);
     valueCard.appendChild(valueInputForm);

@@ -8,7 +8,10 @@ var actions = {
     editor: null,
     path: [],
     valueInputInUse: false,
-    keyInputInUse: false
+    keyInputInUse: false,
+    copied: false,
+    buffer: null,
+    source: null
 };
 
 /**
@@ -81,9 +84,7 @@ actions.setJSON = function (json, skipNotification) {
     this.editor.breadcrumb.innerHTML = '';
     // reset breadcrumb path
     this.resetPath();
-    this.editor.applyChange(this.path, true);
-    // set focus
-    this.setFocus();
+    this.applyChange(true, true);
 
     if (!skipNotification) {
         this.notifyUser('Successfully uploaded JSON', 'success', 2500);
@@ -184,12 +185,10 @@ actions.startBreadcrumb = function () {
 actions.handleObjectValueClick = function (key) {
     // set path
     this.path.push(key);
-    // set focus
-    this.setFocus();
     // update Breadcrumb
     this.pushToBreadcrumb(key, this.path.length - 1);
     // redraw editor
-    this.editor.applyChange(this.path);
+    this.applyChange(false, false);
 };
 
 /**
@@ -242,11 +241,9 @@ actions.handleBreadcrumbClick = function (newPath) {
         return;
     }
     this.path = _.cloneDeep(newPath);
-    // set focus
-    this.setFocus();
     //update Breadcrumb
     this.removeFromBreadcrumb();
-    this.editor.applyChange(this.path);
+    this.applyChange(false, false);
 };
 
 /**
@@ -264,10 +261,7 @@ actions.handleKeyChange = function (oldValue, newValue) {
         itemToUpdate.key = newValue;
     }
     // apply change with update to JSON structure view
-    this.editor.applyChange(this.path, true);
-
-    // sets back the focus
-    this.setFocus();
+    this.applyChange(true, true);
 };
 
 /**
@@ -304,16 +298,20 @@ actions.handleValueChange = function (oldValue, newValue) {
 
     _.extend(itemToUpdate, newValue);
     // apply change with update to JSON structure view
-    this.editor.applyChange(this.path, true);
-
-    // sets back the focus
-    this.setFocus();
+    this.applyChange(true, true);
 
     // if root was edited, breadcrumb must be initialized again
     if (isRootEdited && oldValue.level === 0) {
         this.editor.breadcrumb.innerHTML = '';
         this.startBreadcrumb();
     }
+};
+
+/**
+ * Event callback when value editing is cancelled
+ */
+actions.handleCancel = function () {
+    this.applyChange(false, false);
 };
 
 /**
@@ -346,10 +344,7 @@ actions.addItem = function (index) {
         newItem.key = getUniqueKey(currentData.values);
     }
     currentData.values.splice(index + 1, 0, newItem);
-    this.editor.applyChange(this.path, true);
-    // sets back the focus
-    this.setFocus();
-    this.setInputUse();
+    this.applyChange(true, true);
 };
 
 /**
@@ -364,10 +359,7 @@ actions.deleteItem = function (index) {
     } else {
         currentData = this.extractData();
         currentData.values.splice(index, 1);
-        this.editor.applyChange(this.path, true);
-        // sets back the focus
-        this.setFocus();
-        this.setInputUse();
+        this.applyChange(true, true);
     }
 };
 
@@ -391,12 +383,9 @@ actions.moveItem = function (index, direction) {
         } else {
             currentData.values.splice(index + 1, 0, tempHolder[0]);
         }
-        this.editor.applyChange(this.path, true);
-        // sets back the focus
-        this.setFocus();
-        this.setInputUse();
+        this.applyChange(true, true);
     }
-}
+};
 
 /**
  * Notifies User with banner. It uses Notification module to show banner
@@ -411,6 +400,72 @@ actions.notifyUser = function (message, level = 'error', time = 5000) {
         return;
     }
     notify.displayNotification(message, level, time);
-}
+};
+
+/**
+ * Keyup event callback which is attached when in Copy mode.
+ * On 'Esc' key, copy-mode is exited.
+ * @param {Object} - Keyup Event object
+ */
+actions.handleKeyUp = function (event) {
+    if (event.key === 'Escape' && event.which === 27) {
+        actions.exitCopyMode();
+        actions.setInputUse();
+    }
+};
+
+/**
+ * Handles copy action. Keyup event listener is added and copied
+ * data is stored in buffer.
+ * @param {Object} data - raw data which will be pasted.
+ * @param {Object} source - Source reference which is being copied.
+ */
+actions.handleCopy = function (data, source) {
+    document.addEventListener('keyup', this.handleKeyUp);
+    this.copied = true;
+    this.buffer = data;
+    this.source = source;
+    this.applyChange(true);
+};
+
+/**
+ * Handles paste action. User can continue pasting multiple times.
+ * @param {Object} target - Target location for pasting
+ */
+actions.handlePaste = function (target) {
+    target.type = this.buffer.type;
+    target.values = this.buffer.value;
+    this.applyChange(true);
+};
+
+/**
+ * Gracefully exit the copy-mode. Removes keyup event listener and
+ * empty buffer entirely.
+ */
+actions.exitCopyMode = function () {
+    if (!this.copied) {
+        return;
+    }
+    document.removeEventListener('keyup', this.handleKeyUp);
+    this.copied = false;
+    this.buffer = null;
+    this.source.copied = undefined;
+    this.source = null;
+    this.applyChange(true);
+};
+
+/**
+ * Apply changes to the UI with updated data or any other action.
+ * @param {Boolean} updateJSONView - Flag to trigger re-render of JSON structure view.
+ * @param {Boolean} exitCopyMode - Flag to trigger xopy-mode exit.
+ */
+actions.applyChange = function (updateJSONView, exitCopyMode) {
+    this.editor.applyChange(this.path, updateJSONView);
+    exitCopyMode && this.exitCopyMode();
+    this.setInputUse();
+    // sets back the focus
+    this.setFocus();
+};
+
 
 module.exports = actions;

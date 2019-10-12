@@ -232,7 +232,9 @@ function handleKeyInputFinish (oldValue) {
         newValue = this.keyInput.getElementsByTagName('input')[0].value;
 
     // run validation
-    if (_.isEmpty(newValue)) {
+    if (_.isEqual(oldValue, newValue)) {
+        // if two values are equal, then it is valid and accept the change
+    } else if (_.isEmpty(newValue)) {
         // if key is left empty, do nothing
         actions.notifyUser('Object Key cannot be empty', 'error', 2500);
         return;
@@ -245,8 +247,6 @@ function handleKeyInputFinish (oldValue) {
     this.keyInput.getElementsByTagName('input')[0].value = '';
     // remove onclick handler
     this.keyInput.getElementsByTagName('button')[0].onclick = null;
-    // mark it as not in use anymore
-    actions.keyInputInUse = false;
     // remove key input
     parent.removeChild(parent.childNodes[0]);
     // trigger action to save to the JSON
@@ -279,19 +279,20 @@ exports.handleKeyCardClick = function (currentText, event) {
  * Saves new value to the JSON and update Editor and JSON view.
  * Before saving, validation is run against new value
  * @param {Object} oldValue - old value which will be passed to actions with new value
+ * @param {Boolean} cancel - True if action was canceleed.
  */
-function handleValueInputFinish (oldValue) {
+function handleValueInputFinish (oldValue, cancel) {
     var parent = this.valueInput.parentNode,
         newType = this.valueInput.getElementsByClassName('dropbtn')[0].innerText,
         form = this.valueInput.getElementsByClassName('value-input-form')[0],
         newValue = getNewValue(form, newType, oldValue),
         childToRemove = parent.getElementsByClassName('value-wrapper-input')[0];
     // run validation
-    if (!validateValue(newType, newValue)) {
+    if (!cancel && !validateValue(newType, newValue)) {
         return;
     }
 
-    if (!oldValue.key) {
+    if (!cancel && !oldValue.key) {
         // if array, get the index being edited
         var indexCard = parent.querySelectorAll('div[class^="index-card-"')[0];
         // assign index to old value
@@ -302,11 +303,14 @@ function handleValueInputFinish (oldValue) {
     }
     // remove onclick handler
     this.valueInput.getElementsByTagName('button')[0].onclick = null;
+    this.valueInput.getElementsByTagName('button')[1].onclick = null;
     domUtil.removeAllChildNodes(form);
-    // mark it as not in use
-    actions.valueInputInUse = false;
     parent.removeChild(childToRemove);
-    actions.handleValueChange(oldValue, {type: newType, values: newValue});
+    if (!cancel) {
+        actions.handleValueChange(oldValue, {type: newType, values: newValue});
+    } else {
+        actions.handleCancel();
+    }
 }
 
 /**
@@ -351,7 +355,8 @@ exports.handleValueCardClick = function (node, data) {
     form.appendChild(getFormForValue(data));
 
     // set onclick for key input button
-    this.valueInput.getElementsByTagName('button')[0].onclick = handleValueInputFinish.bind(this, _.cloneDeep(data));
+    this.valueInput.getElementsByTagName('button')[0].onclick = handleValueInputFinish.bind(this, {}, true);
+    this.valueInput.getElementsByTagName('button')[1].onclick = handleValueInputFinish.bind(this, _.cloneDeep(data), false);
     // replace card with value Input form
     parentMost.replaceChild(this.valueInput, node);
 };
