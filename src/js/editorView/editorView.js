@@ -43,7 +43,8 @@ editorView.populateEditor = function (json, parent, path = []) {
         data = json,
         lineItem,
         keyCard,
-        valueCard;
+        valueCard,
+        toggleActive;
 
     if (path && path.length) {
         _.forEach(path, function (r) {
@@ -59,6 +60,10 @@ editorView.populateEditor = function (json, parent, path = []) {
 
     switch (data.type) {
     case TYPES.OBJECT:
+        toggleActive = function (level, key) {
+            var item = document.getElementsByClassName(`data-level-${level} ${key}`)[0];
+            item && item.classList.toggle('active');
+        };
         if (data.values.length) {
             _.forEach(data.values, function (i, idx) {
                 lineItem = getLineElement();
@@ -69,6 +74,10 @@ editorView.populateEditor = function (json, parent, path = []) {
 
                 lineItem.appendChild(keyCard);
                 valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
+                if (i.type === TYPES.OBJECT || i.type === TYPES.ARRAY) {
+                    lineItem.addEventListener('mouseenter', toggleActive.bind(this, i.level, i.key), false);
+                    lineItem.addEventListener('mouseleave', toggleActive.bind(this, i.level, i.key), false);
+                }
 
                 // add click event listener
                 valueCard.childNodes[0].onclick = editorUtil.getClickHandler(i, idx);
@@ -90,10 +99,18 @@ editorView.populateEditor = function (json, parent, path = []) {
         }
         break;
     case TYPES.ARRAY:
+        toggleActive = function (level, index) {
+            var item = document.getElementsByClassName(`data-level-${level} array-${index}`)[0];
+            item && item.classList.toggle('active');
+        };
         if (data.values.length) {
             _.forEach(data.values, function (i, idx) {
                 lineItem = getLineElement();
                 lineItem.appendChild(editorUtil.getLeftActionCard(idx));
+
+                lineItem.addEventListener('mouseenter', toggleActive.bind(this, i.level, idx), false);
+                lineItem.addEventListener('mouseleave', toggleActive.bind(this, i.level, idx), false);
+
                 lineItem.appendChild(editorUtil.getIndexCard(idx));
                 valueCard = editorUtil.getValueCard(editorUtil.getValueText(i), i.type, idx);
 

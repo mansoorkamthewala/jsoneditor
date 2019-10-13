@@ -108,14 +108,14 @@ Editor.prototype.applyChange = function (path, updateJSONView = false) {
     // only update JSON structure view if needed
     if (updateJSONView) {
         // start with emptying json view
-        jsonView.target.innerHTML = '';
+        domUtil.removeAllChildNodes(jsonView.target);
         // redraws JSON structure view
         jsonView.populateJSON(this.json, jsonView.target, actions.copied);
         // add height to vertical drag bar
         this.adjustVerticalBarHeight();
     }
     // start with emptying editor view
-    editorView.target.innerHTML = '';
+    domUtil.removeAllChildNodes(editorView.target);
     // redraws editor
     editorView.populateEditor(this.json, editorView.target, path);
 };

@@ -92,6 +92,11 @@ body .json-root div.focused {
     width: 60%;
 }
 
+div[class^="data-level-"][class*=" array-"].active,
+div[class^="data-level-"].active {
+    background-color: #e6e6e6;
+}
+
 .line-item div.value-wrapper-input {
     width: 60%;
     display: flex;

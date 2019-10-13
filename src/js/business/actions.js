@@ -81,7 +81,7 @@ actions.setJSON = function (json, skipNotification) {
     this.editor.active = true;
 
     // Make Breadcrumb empty
-    this.editor.breadcrumb.innerHTML = '';
+    domUtil.removeAllChildNodes(this.editor.breadcrumb);
     // reset breadcrumb path
     this.resetPath();
     this.applyChange(true, true);
@@ -188,7 +188,7 @@ actions.handleObjectValueClick = function (key) {
     // update Breadcrumb
     this.pushToBreadcrumb(key, this.path.length - 1);
     // redraw editor
-    this.applyChange(false, false);
+    this.applyChange(true, false);
 };
 
 /**
@@ -302,7 +302,7 @@ actions.handleValueChange = function (oldValue, newValue) {
 
     // if root was edited, breadcrumb must be initialized again
     if (isRootEdited && oldValue.level === 0) {
-        this.editor.breadcrumb.innerHTML = '';
+        domUtil.removeAllChildNodes(this.editor.breadcrumb);
         this.startBreadcrumb();
     }
 };
