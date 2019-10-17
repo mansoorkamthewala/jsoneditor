@@ -1,0 +1,37 @@
+{
+  "name": "@mansoorkamthewala/jsoneditor",
+  "version": "1.0.0",
+  "description": "A web based tool to load, view, edit JSON structure.",
+  "main": "index.js",
+  "scripts": {
+    "dev-build": "webpack --watch",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mansoorkamthewala/jsoneditor.git"
+  },
+  "keywords": [
+    "JSON",
+    "editor",
+    "web"
+  ],
+  "author": "Mansoor Kamthewala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mansoorkamthewala/jsoneditor/issues"
+  },
+  "homepage": "https://github.com/mansoorkamthewala/jsoneditor#readme",
+  "devDependencies": {
+    "css-loader": "^3.2.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^4.2.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.10.2",
+    "lodash": "^4.17.15"
+  }
+}

@@ -1,0 +1,331 @@
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
+div.wrapper .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+body .json-root,
+body .editor-root,
+body .breadcrumb {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+body .json-root div[class^="key-level-"] {
+    font-weight: bold;
+}
+
+body .json-root div[class^="value-level-"].copied {
+    border: 1px dashed;
+}
+
+body .json-root div.focused {
+    background-color: #fff888;
+}
+
+.wrapper .editor-view,
+.wrapper .display-view {
+    background-color: #F8F8F8;
+    box-sizing: border-box;
+    border: 1px solid black;
+    overflow-x: auto;
+    overflow-y: scroll;
+    white-space: nowrap;
+}
+
+.wrapper .editor-view {
+    border-right: 0px;
+}
+.wrapper .display-view {
+    border-left: 0px;
+}
+
+.wrapper .editor-toolbar {
+    background-color: #bdd7ea;
+    box-sizing: border-box;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.wrapper .editor-toolbar span {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    padding-left: 5px;
+}
+
+.wrapper .breadcrumb {
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    border: 1px solid black;
+    padding: 5px;
+    height: 2em;
+}
+
+.line-item, div[class^="value-wrapper-"] {
+    display: flex;
+}
+
+.line-item div[class^="key-card-"],
+.line-item div[class^="index-card-"],
+.line-item div[class^="value-wrapper-"] {
+    background: #e0e0e0;
+    text-align: center;
+    margin: 5px;
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+
+.line-item div[class^="key-card-"] {
+    width: 25%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.line-item div[class^="index-card-"] {
+    width: 10%;
+    cursor: pointer;
+}
+
+.line-item div[class^="value-wrapper-"] {
+    width: 60%;
+}
+
+div[class^="data-level-"][class*=" array-"].active,
+div[class^="data-level-"].active {
+    background-color: #e6e6e6;
+}
+
+.line-item div.value-wrapper-input {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.line-item div[class^="left-action-wrapper-"],
+.line-item div[class^="right-action-wrapper-"] {
+    width: 15%;
+    text-align: center;
+    margin: 5px;
+}
+
+.line-item div[class^="value-card-"] {
+    width: 75%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.line-item div[class^="type-card-"] {
+    width: 25%;
+    text-align: center;
+    border-left: 1px solid;
+    cursor: pointer;
+}
+
+.line-item div[class^="type-card-"] .fa-pen {
+    font-size: smaller;
+    float: right;
+    padding: 3px 3px;
+}
+
+.line-item button[class^="btn-"] {
+    margin: 0px 1px;
+    outline: none;
+    cursor: pointer;
+    color: white;
+}
+
+.line-item button[class^="btn-add-"] {
+    border: 1px solid #28a745;
+    background: #28a745;
+}
+
+.line-item button[class^="btn-del-"] {
+    border: 1px solid #dc3545;
+    background: #dc3545;
+}
+.line-item button[class^="btn-up-"],
+.line-item button[class^="btn-down-"] {
+    border: 1px solid #007bff;
+    background: #007bff;
+}
+
+.breadcrumb div[class^="path-"] {
+    cursor: pointer;
+}
+
+.key-input-wrapper{
+    display: flex;
+    flex-direction: row;
+}
+
+.value-input-toolbar {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-grow: 2;
+}
+
+.value-input-form {
+    border-top: 1px solid;
+}
+
+.value-input-form-wrapper {
+    text-align: left;
+    background: white;
+}
+
+.value-input-form-wrapper textarea,
+.value-input-form-wrapper input {
+    width: 100%;
+    padding: 0px;
+    border: 0px;
+    resize: none;
+    outline: none;
+}
+
+.key-input-wrapper input.key-input-text {
+    flex-grow: 2;
+    border: none;
+    width: 90%;
+}
+
+.key-input-wrapper input:focus {
+    outline: none;
+}
+
+.key-input-wrapper button.key-input-button,
+.value-input-toolbar button.value-input-button {
+    background: #28a745;
+    border: 1px solid #28a745;
+    cursor: pointer;
+    color: white;
+    margin: 0px 1px;
+}
+
+.value-input-toolbar button.value-cancel-button {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+    cursor: pointer;
+    color: white;
+    margin-left: 1px;
+}
+
+.key-input-wrapper button:focus,
+.value-input-toolbar button:focus {
+    outline: none;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    border: none;
+    background-color: inherit;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    min-width: 100px;
+    background: #f8f8f8;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    padding: 5px;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.alert {
+    width: 25%;
+    height: 50px;
+    right: 20px;
+    box-shadow: 5px 10px 20px #888888;
+    border-radius: 4px;
+    opacity: 0;
+    position: absolute;
+    z-index: 10;
+}
+
+.alert-text {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    height: inherit;
+    padding: 0px 5px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.wrapper .alert {
+    transform: translateY(0);
+    transition-timing-function: ease-in;
+    transition: 0.2s;
+}
+.wrapper .alert-is-shown.alert {
+    transition: 0.25s;
+    transition-timing-function: ease-out;
+    transform: translateY(5px);
+    opacity: 1;
+}
+
+.dragbar-wrapper {
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    cursor: row-resize;
+}
+
+.ghostbar {
+    position: absolute;
+    height: 2px;
+    background-color: #000;
+    opacity: 0.5;
+    cursor: row-resize;
+}
+
+.v-dragbar-wrapper {
+    width: 3px;
+    background-color: black;
+    cursor: col-resize;
+    float: left;
+}
+
+
+.v-ghostbar {
+    position: absolute;
+    width: 3px;
+    background-color: #000;
+    opacity: 0.5;
+    cursor: col-resize;
+}
+
+.copy-paste-wrapper {
+    width: 15px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.copy-paste-wrapper .fa-copy,
+.copy-paste-wrapper .fa-paint-roller {
+    display: none;
+}
+
+.line-item:hover .copy-paste-wrapper .fa-copy,
+.line-item:hover .copy-paste-wrapper .fa-paint-roller {
+    display: block;
+    opacity: 0.5;
+}
