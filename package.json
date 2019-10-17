@@ -1,6 +1,6 @@
 {
   "name": "@mansoorkamthewala/jsoneditor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A web based tool to load, view, edit JSON structure.",
   "main": "index.js",
   "scripts": {
