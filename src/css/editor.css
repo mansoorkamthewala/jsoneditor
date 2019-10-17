@@ -27,6 +27,7 @@ body .json-root div.focused {
 .wrapper .editor-view,
 .wrapper .display-view {
     background-color: #F8F8F8;
+    height: 550px;
     box-sizing: border-box;
     border: 1px solid black;
     overflow-x: auto;
