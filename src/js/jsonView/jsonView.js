@@ -124,7 +124,7 @@ jsonView.populateJSON = function (json, parent, copyMode, keyIndex = 0, hasSibli
     default:
         lineItem1 = getLineElement(json.level);
         // append value
-        lineItem1.appendChild(getValue('&nbsp;'.repeat(4), json.level, false));
+        lineItem1.appendChild(getValue({values: '&nbsp;'.repeat(4), level:json.level}));
         // and finally append line item to the parent
         parent.appendChild(lineItem1);
         break;
