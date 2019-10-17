@@ -65,9 +65,7 @@ Editor.prototype.createViews = function () {
     this.editorDiv = domUtil.createDomElementWithClass('div', 'editor-view');
     this.treeView = domUtil.createDomElementWithClass('div', 'display-view');
 
-    this.editorDiv.style.height = `${editorHeight}px`;
     this.editorDiv.style.width = '50%';
-    this.treeView.style.height = `${editorHeight}px`;
     this.treeView.style.width = '50%';
 
     this.displayEditor = domUtil.createDomElementWithClass('div', 'editor');
@@ -75,7 +73,6 @@ Editor.prototype.createViews = function () {
 
     this.displayJSON = domUtil.createDomElementWithClass('div', 'json');
     this.verticalDragBar = this.addVerticalDragBar();
-    this.adjustVerticalBarHeight();
     this.treeView.appendChild(this.verticalDragBar);
     this.treeView.appendChild(this.displayJSON);
 
@@ -146,7 +143,7 @@ Editor.prototype.addDragBar = function () {
                 var ghostBar = document.getElementsByClassName('ghostbar')[0],
                     leftEditor = document.getElementsByClassName('editor-view')[0],
                     rightEditor = document.getElementsByClassName('display-view')[0],
-                    newHeight = event.pageY - _this.toolbar.offsetHeight - _this.breadcrumb.offsetHeight - 8;
+                    newHeight = event.pageY - _this.toolbar.offsetHeight - _this.breadcrumb.offsetHeight - _this.toolbar.offsetTop;
 
                 // keep the minimum height to 55
                 newHeight = newHeight <= 55 ? 55 : newHeight;
@@ -195,7 +192,7 @@ Editor.prototype.addVerticalDragBar = function () {
         mouseDrag = function (e) {
             // sets the new location for the ghostbar
             var ghostBar = document.getElementsByClassName('v-ghostbar')[0];
-            ghostBar && ghostBar.setAttribute('style', `left:${e.pageX}px;height:${_this.treeView.style.height}`);
+            ghostBar && ghostBar.setAttribute('style', `left:${e.pageX}px;height:${_this.treeView.offsetHeight}px`);
         },
         removeListeners = function () {
             // remove mousemove listener
@@ -241,6 +238,7 @@ Editor.prototype.addVerticalDragBar = function () {
         document.addEventListener('mouseup', mouseUp);
     });
     barWrapper.appendChild(bar);
+    barWrapper.style.height = '550px';
     return barWrapper;
 };
 
